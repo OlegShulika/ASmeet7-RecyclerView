@@ -5,4 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorRecyclerView">#f2e8b7</color>
     <color name="colorViewItem1">#d9eab9</color>
+    <color name="colorViewItem2">#c7fcf7</color>
+    <color name="colorViewItem3">#d8bef9</color>
+    <color name="colorViewItem4">#ffd0d0</color>
 </resources>

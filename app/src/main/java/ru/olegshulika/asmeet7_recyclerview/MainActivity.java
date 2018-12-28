@@ -27,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG,"onReceive "+action);
             if(TextService.KEY_BROADCAST.equals(action)) {
                 String sysTime = "time="+intent.getLongExtra(TextService.KEY_TIME, 0);
-                mAdapter.AddItem(sysTime);
+                int itemType  = intent.getIntExtra(TextService.KEY_TYPE, -1);
+                mAdapter.AddItem(itemType, sysTime);
             }
         }
     };
@@ -37,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, " onCreate");
         initViews();
-        setContentView(R.layout.activity_main);
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         localBroadcstReceiver = new LocalBroadcastReceiver();
     }
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, " onStart");
         super.onStart();
         startService(TextService.newIntent(MainActivity.this, Command.START));
-        mAdapter.AddItem("init item 0");
+//        mAdapter.AddItem("init item 0");
     }
 
     @Override

@@ -20,6 +20,7 @@ import java.util.List;
 public class TextService extends Service {
     public static final String  KEY_BROADCAST = "ru.olegshulika.asmeet7.LOCAL_BROADCAST";
     public static final String  KEY_TIME = "LOCAL_BROADCAST_TIME";
+    public static final String  KEY_TYPE = "LOCAL_BROADCAST_ITEMTYPE";
 
     private static final String TAG = "_TextService";
     private static final int MODE = Service.START_NOT_STICKY;
@@ -84,10 +85,12 @@ public class TextService extends Service {
     }
 
     private void sendLocalBroadcast(long sysTime) {
+        int itemType = (int)sysTime%10;
         Intent broadcastIntent = new Intent(KEY_BROADCAST);
         broadcastIntent.putExtra(KEY_TIME, sysTime);
+        broadcastIntent.putExtra(KEY_TYPE, itemType);
         localBroadcastManager.sendBroadcast(broadcastIntent);
-        Log.d(TAG,"sendLocalBroadcast "+sysTime);
+        Log.d(TAG,"sendLocalBroadcast "+sysTime+" t="+itemType);
     }
 
     public static final Intent newIntent(Context context, int serviceCommand){

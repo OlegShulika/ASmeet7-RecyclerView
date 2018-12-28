@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import android.support.constraint.ConstraintLayout;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class CustomAdapter extends RecyclerView.Adapter<MyViewHolder> {
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        TextView v = (TextView)LayoutInflater.from(parent.getContext()).
+        ConstraintLayout v = (ConstraintLayout)LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.item1_layout, parent, false);
         return new MyViewHolder(v);
     }
@@ -32,9 +32,9 @@ public class CustomAdapter extends RecyclerView.Adapter<MyViewHolder> {
         return mData.size();
     }
 
-    public void AddItem(String item) {
-        Log.d(TAG, "AddItem "+item);
-        mData.add(item);
+    public void AddItem(int itemType, String itemText) {
+        Log.d(TAG, "AddItem ("+itemType+") "+itemText);
+        mData.add(itemText);
         notifyDataSetChanged();
     }
 }
