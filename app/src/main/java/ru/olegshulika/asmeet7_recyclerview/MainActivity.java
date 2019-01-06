@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
             if(TextService.KEY_BROADCAST.equals(action)) {
                 String sysTime = "time="+intent.getLongExtra(TextService.KEY_TIME, 0);
                 int itemType  = intent.getIntExtra(TextService.KEY_TYPE, -1);
-                mAdapter.AddItem(itemType, sysTime);
+                mAdapter.AddItem(itemType, sysTime+"/"+itemType);
             }
         }
     };
@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, " onStart");
         super.onStart();
         startService(TextService.newIntent(MainActivity.this, Command.START));
-//        mAdapter.AddItem("init item 0");
     }
 
     @Override

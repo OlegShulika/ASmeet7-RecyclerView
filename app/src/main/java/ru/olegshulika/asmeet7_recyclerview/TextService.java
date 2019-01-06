@@ -27,6 +27,7 @@ public class TextService extends Service {
     private static final String KEY_COMMAND = "text.service.cmd";
     private static final int SERVICE_WORKTIME_LIMIT = 1800000;     // 30 min
     private static final int SERVICE_SLEEP_TIME = 5000;            // wait 5 sec
+    private static final int SERVICE_MAXITEMTYPES = 3;             // item types 1-3
 
     private boolean serviceStarted = false;
     private boolean isServiceStarted() {
@@ -85,7 +86,7 @@ public class TextService extends Service {
     }
 
     private void sendLocalBroadcast(long sysTime) {
-        int itemType = (int)sysTime%10;
+        int itemType = (int)(sysTime % SERVICE_MAXITEMTYPES) + 1;
         Intent broadcastIntent = new Intent(KEY_BROADCAST);
         broadcastIntent.putExtra(KEY_TIME, sysTime);
         broadcastIntent.putExtra(KEY_TYPE, itemType);
