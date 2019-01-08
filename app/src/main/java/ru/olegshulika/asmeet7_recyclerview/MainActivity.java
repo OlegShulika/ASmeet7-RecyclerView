@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private CustomAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private LocalBroadcastManager localBroadcastManager;
-    private LocalBroadcastReceiver localBroadcstReceiver;
+    private LocalBroadcastReceiver localBroadcastReceiver;
 
     private class LocalBroadcastReceiver extends BroadcastReceiver {
         LocalBroadcastReceiver(){super();}
@@ -26,9 +26,10 @@ public class MainActivity extends AppCompatActivity {
             String action = intent.getAction();
             Log.d(TAG,"onReceive "+action);
             if(TextService.KEY_BROADCAST.equals(action)) {
-                String sysTime = "time="+intent.getLongExtra(TextService.KEY_TIME, 0);
+                long id = intent.getLongExtra(TextService.KEY_TIME, 0);
+                String sysTime = "time="+id;
                 int itemType  = intent.getIntExtra(TextService.KEY_TYPE, -1);
-                mAdapter.AddItem(itemType, sysTime+"/"+itemType);
+                mAdapter.AddItem(id, itemType, sysTime+"/"+itemType);
             }
         }
     };
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, " onCreate");
         initViews();
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
-        localBroadcstReceiver = new LocalBroadcastReceiver();
+        localBroadcastReceiver = new LocalBroadcastReceiver();
     }
 
     private void initViews(){
@@ -64,14 +65,14 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(TextService.KEY_BROADCAST);
-        localBroadcastManager.registerReceiver(localBroadcstReceiver, intentFilter);
+        localBroadcastManager.registerReceiver(localBroadcastReceiver, intentFilter);
     }
 
     @Override
     protected void onPause() {
         Log.d(TAG, " onPause");
         super.onPause();
-        localBroadcastManager.unregisterReceiver(localBroadcstReceiver);
+        localBroadcastManager.unregisterReceiver(localBroadcastReceiver);
 
     }
 
