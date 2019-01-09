@@ -19,6 +19,7 @@ import java.util.List;
 import static ru.olegshulika.asmeet7_recyclerview.ItemTypes.ITEM1;
 import static ru.olegshulika.asmeet7_recyclerview.ItemTypes.ITEM2;
 import static ru.olegshulika.asmeet7_recyclerview.ItemTypes.ITEM3;
+import static ru.olegshulika.asmeet7_recyclerview.ItemTypes.ITEM4RV;
 
 
 public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -38,6 +39,7 @@ public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         mFactoryMap.put(ITEM1.getType(), new Item1ViewHolderFactory( this));
         mFactoryMap.put(ITEM2.getType(), new Item2ViewHolderFactory( this));
         mFactoryMap.put(ITEM3.getType(), new Item3ViewHolderFactory( this));
+        mFactoryMap.put(ITEM4RV.getType(), new Item4ViewHolderFactory( this));
     }
 
     private ViewHolderBinder generateBinder(BaseItem baseItem){
@@ -49,6 +51,8 @@ public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 return new Item2ViewHolderBinder(baseItem, baseItem.getType());
             case ITEM3:
                 return new Item3ViewHolderBinder(baseItem, baseItem.getType());
+            case ITEM4RV:
+                return new Item4ViewHolderBinder(baseItem, baseItem.getType());
             default:
                 return null;
         }
@@ -65,7 +69,7 @@ public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG, ">>bind<< pos="+position);
+        Log.d(TAG, ">bind< pos="+position);
         ViewHolderBinder binder = mBinders.get(position);
         if (binder != null)
             binder.bindViewHolder(holder);
@@ -76,7 +80,8 @@ public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (payloads.isEmpty()){
             super.onBindViewHolder(holder, position, payloads);
         } else {
-
+            Log.d(TAG, ">>bind<< pos="+position);
+        //TODO xxxx
         }
     }
 
@@ -90,9 +95,20 @@ public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return mData.size();
     }
 
+    public String GetDataSnapshot() {
+        String itemChars="";
+        for (Item item:mData)
+            itemChars += item.getCharType();
+        return itemChars;
+    }
+
+
     public void AddItem(long id, int itemType, String itemText) {
         Log.d(TAG, "AddItem ("+itemType+") "+itemText);
         List<Item> oldData = new ArrayList<>(mData);
+
+        if (id==0)                              // internal recycler view
+            id = -System.currentTimeMillis();
 
         Item newItem = new Item(id, itemType,itemText);
         mData.add(newItem);

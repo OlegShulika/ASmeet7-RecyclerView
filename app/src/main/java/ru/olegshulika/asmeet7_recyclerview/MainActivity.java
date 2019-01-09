@@ -10,10 +10,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private RecyclerView mRecyclerView;
+    private Button mAddItem4Button;
     private CustomAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private LocalBroadcastManager localBroadcastManager;
@@ -39,17 +42,30 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, " onCreate");
         initViews();
+        initListeners();
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         localBroadcastReceiver = new LocalBroadcastReceiver();
     }
 
     private void initViews(){
         setContentView(R.layout.activity_main);
+        mAddItem4Button  = findViewById(R.id.add_item4_button);
         mRecyclerView = findViewById(R.id.recycler_view);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new CustomAdapter();
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void initListeners() {
+        if (mAddItem4Button != null)
+            mAddItem4Button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "onClick mAddItem4Button");
+                    mAdapter.AddItem(0, ItemTypes.ITEM4RV.getType(), mAdapter.GetDataSnapshot());
+                }
+            });
     }
 
     @Override

@@ -23,4 +23,6 @@ public class Item implements BaseItem {
     public long getId() {
         return idItem;
     }
+
+    public char getCharType() { return (char)('0'+getType()); }
 }

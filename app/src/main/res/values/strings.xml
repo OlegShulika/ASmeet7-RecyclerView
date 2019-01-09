@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ASmeet7-RecyclerView</string>
     <string name="header_text">RecyclerView Sample</string>
+    <string name="add_item4_horizontal_recyclerview">Add item4 - horizontal RecyclerView</string>
 </resources>
