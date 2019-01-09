@@ -7,10 +7,10 @@ import java.util.List;
 
 public class MyDiffCall extends DiffUtil.Callback {
 
-    private List<CustomAdapter.Item> mOldData;
-    private List<CustomAdapter.Item> mNewData;
+    private List<Item> mOldData;
+    private List<Item> mNewData;
 
-    public MyDiffCall(List<CustomAdapter.Item> oldData, List<CustomAdapter.Item> newData){
+    public MyDiffCall(List<Item> oldData, List<Item> newData){
         mOldData = oldData;
         mNewData = newData;
     }
@@ -32,8 +32,8 @@ public class MyDiffCall extends DiffUtil.Callback {
 
     @Override
     public boolean areContentsTheSame(int oldDataPos, int newDataPos) {
-        CustomAdapter.Item oldItem = mOldData.get(oldDataPos);
-        CustomAdapter.Item newItem = mNewData.get(newDataPos);
+        Item oldItem = mOldData.get(oldDataPos);
+        Item newItem = mNewData.get(newDataPos);
         return oldItem.getType()==newItem.getType() &&
                 oldItem.getText()==newItem.getText() &&
                 oldDataPos==newDataPos;
@@ -42,8 +42,8 @@ public class MyDiffCall extends DiffUtil.Callback {
     @Nullable
     @Override
     public Object getChangePayload(int oldDataPos, int newDataPos) {
-        CustomAdapter.Item oldItem = mOldData.get(oldDataPos);
-        CustomAdapter.Item newItem = mNewData.get(newDataPos);
+        Item oldItem = mOldData.get(oldDataPos);
+        Item newItem = mNewData.get(newDataPos);
         Bundle diff = new Bundle();
         if (oldItem.getText()!=newItem.getText()){
             diff.putString("text", newItem.getText());

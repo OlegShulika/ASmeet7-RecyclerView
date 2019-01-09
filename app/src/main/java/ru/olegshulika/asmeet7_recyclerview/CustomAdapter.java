@@ -1,6 +1,7 @@
 package ru.olegshulika.asmeet7_recyclerview;
 
 import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
@@ -22,40 +23,21 @@ import static ru.olegshulika.asmeet7_recyclerview.ItemTypes.ITEM3;
 
 public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "CustomAdapter";
-    public class Item implements BaseItem {
-        private long idItem;
-        private ItemTypes itemType;
-        private String text;
-
-        public Item(long id, int type, String msg) {
-            this.idItem = id;
-            this.itemType = ItemTypes.fromId(type);
-            this.text = msg;
-        }
-
-        @Override
-        public int getType() {
-            return itemType.getType();
-        }
-        public String getText() {
-            return text;
-        }
-        public long getId() { return idItem; }
-    }
-
-    private static List<Item> mData = new ArrayList<>();
-    private static List<ViewHolderBinder> mBinders = new ArrayList<>();
+    private List<Item> mData;
+    private List<ViewHolderBinder> mBinders;
     private SparseArray<ViewHolderFactory> mFactoryMap;
 
     public CustomAdapter() {
+        mData = new ArrayList<>();
+        mBinders = new ArrayList<>();
         initFactory();
     }
 
     private void initFactory() {
         mFactoryMap = new SparseArray<>();
-        mFactoryMap.put(ITEM1.getType(), new Item123ViewHolderFactory(R.layout.item1_layout, ITEM1));
-        mFactoryMap.put(ITEM2.getType(), new Item123ViewHolderFactory(R.layout.item2_layout, ITEM2));
-        mFactoryMap.put(ITEM3.getType(), new Item123ViewHolderFactory(R.layout.item3_layout, ITEM3));
+        mFactoryMap.put(ITEM1.getType(), new Item1ViewHolderFactory( this));
+        mFactoryMap.put(ITEM2.getType(), new Item2ViewHolderFactory( this));
+        mFactoryMap.put(ITEM3.getType(), new Item3ViewHolderFactory( this));
     }
 
     private ViewHolderBinder generateBinder(BaseItem baseItem){
@@ -90,6 +72,15 @@ public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position, @NonNull List<Object> payloads){
+        if (payloads.isEmpty()){
+            super.onBindViewHolder(holder, position, payloads);
+        } else {
+
+        }
+    }
+
+    @Override
     public int getItemViewType(int position){
         return mData.get(position).getType();
     }
@@ -101,92 +92,29 @@ public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void AddItem(long id, int itemType, String itemText) {
         Log.d(TAG, "AddItem ("+itemType+") "+itemText);
+        List<Item> oldData = new ArrayList<>(mData);
+
         Item newItem = new Item(id, itemType,itemText);
         mData.add(newItem);
         mBinders.add(generateBinder(newItem));
-        notifyItemInserted(mData.size()-1);
+        NotifyDiffResult(oldData,mData);
     }
 
-    public static void DeleteItem(int position) {
+    public void DeleteItem(int position) {
         Log.d(TAG, "DeleteItem pos="+position);
         if (position>=0 && position<mData.size()) {
+            List<Item> oldData = new ArrayList<>(mData);
             mData.remove(position);
             mBinders.remove(position);
-            //notifyItemRemoved(position);
-            //notifyItemRangeChanged(position, mData.size());
+            NotifyDiffResult(oldData,mData);
         }
     }
 
-    public static class Item1ViewHolder extends RecyclerView.ViewHolder {
-        public TextView textItem;
-        public Button buttonItem;
-        private static final String TAG = "Item1ViewHolder";
+    private void NotifyDiffResult (List<Item> oldData, List<Item> newData){
+        MyDiffCall addDiffUtilCallback = new MyDiffCall(oldData, newData);
+        DiffUtil.DiffResult productDiffResult = DiffUtil.calculateDiff(addDiffUtilCallback);
 
-        public Item1ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            Log.d(TAG, "Item1ViewHolder()");
-
-            textItem = itemView.findViewById(R.id.item1_textview);
-            buttonItem = itemView.findViewById(R.id.item1_button);
-
-            if (buttonItem!=null)
-                buttonItem.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int pos = getAdapterPosition();
-                        Log.d(TAG, "delete item1 pos="+pos);
-                        DeleteItem(pos);
-                    }
-                });
-        }
-    }
-
-    public static class Item2ViewHolder extends RecyclerView.ViewHolder {
-        public TextView textItem;
-        public Button buttonItem;
-        private static final String TAG = "Item2ViewHolder";
-
-        public Item2ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            Log.d(TAG, "Item2ViewHolder()");
-
-            textItem = itemView.findViewById(R.id.item2_textview);
-            buttonItem = itemView.findViewById(R.id.item2_button);
-
-            if (buttonItem!=null)
-                buttonItem.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int pos = getAdapterPosition();
-                        Log.d(TAG, "delete item2 pos="+pos);
-                        DeleteItem(pos);
-                    }
-                });
-        }
-    }
-
-    public static class Item3ViewHolder extends RecyclerView.ViewHolder {
-        public TextView textItem;
-        public Button buttonItem;
-        private static final String TAG = "Item3ViewHolder";
-
-        public Item3ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            Log.d(TAG, "Item3ViewHolder()");
-
-            textItem = itemView.findViewById(R.id.item3_textview);
-            buttonItem = itemView.findViewById(R.id.item3_button);
-
-            if (buttonItem!=null)
-                buttonItem.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int pos = getAdapterPosition();
-                        Log.d(TAG, "delete item3 pos="+pos);
-                        DeleteItem(pos);
-                    }
-                });
-        }
+        productDiffResult.dispatchUpdatesTo(this);
     }
 
 }
