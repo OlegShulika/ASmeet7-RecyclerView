@@ -1,5 +1,6 @@
 package ru.olegshulika.asmeet7_recyclerview;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
@@ -80,8 +81,15 @@ public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (payloads.isEmpty()){
             super.onBindViewHolder(holder, position, payloads);
         } else {
-            Log.d(TAG, ">>bind<< pos="+position);
-        //TODO xxxx
+            Log.d(TAG, ">>bind<< pos=" + position);
+            ViewHolderBinder binder = mBinders.get(position);
+            Bundle diff = (Bundle) payloads.get(0);
+            for (String key : diff.keySet()) {
+                if (key.equals("text"))
+                    binder.bindViewHolder(holder, true, false);
+                if (key.equals("position"))
+                    binder.bindViewHolder(holder, false, true);
+            }
         }
     }
 

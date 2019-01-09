@@ -9,7 +9,10 @@ public abstract class ViewHolderBinder {
         this.viewType = viewType;
     }
 
-    public abstract void bindViewHolder(RecyclerView.ViewHolder holder);
+    public void bindViewHolder(RecyclerView.ViewHolder holder){ bindViewHolder(holder, true, true);}
+
+    // for DiffUtils
+    public abstract void bindViewHolder(RecyclerView.ViewHolder holder, boolean updateText, boolean updatePositionN);
 
     public abstract BaseItem getItem();
 }

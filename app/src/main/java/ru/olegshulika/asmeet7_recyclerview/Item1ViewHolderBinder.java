@@ -11,10 +11,12 @@ public class Item1ViewHolderBinder extends ViewHolderBinder {
     }
 
     @Override
-    public void bindViewHolder(RecyclerView.ViewHolder holder) {
+    public void bindViewHolder(RecyclerView.ViewHolder holder, boolean updateText, boolean updateButtonPosN) {
         Item1ViewHolder item1ViewHolder = (Item1ViewHolder)holder;
-        item1ViewHolder.textItem.setText(mItem.getText());
-        item1ViewHolder.buttonItem.setText("T"+mItem.getType()+" #"+holder.getAdapterPosition());
+        if (updateText)
+            item1ViewHolder.textItem.setText(mItem.getText());
+        if (updateButtonPosN)
+            item1ViewHolder.buttonItem.setText("T"+mItem.getType()+" #"+holder.getAdapterPosition());
     }
 
     @Override
