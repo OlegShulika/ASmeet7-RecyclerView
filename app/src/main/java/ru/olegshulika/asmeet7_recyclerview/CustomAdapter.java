@@ -5,14 +5,22 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.support.constraint.ConstraintLayout;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.olegshulika.asmeet7_recyclerview.ItemTypes.ITEM1;
+import static ru.olegshulika.asmeet7_recyclerview.ItemTypes.ITEM2;
+import static ru.olegshulika.asmeet7_recyclerview.ItemTypes.ITEM3;
 
-public class CustomAdapter extends RecyclerView.Adapter<MyViewHolder> {
+
+public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "CustomAdapter";
     public class Item implements BaseItem {
         private long idItem;
@@ -35,7 +43,8 @@ public class CustomAdapter extends RecyclerView.Adapter<MyViewHolder> {
         public long getId() { return idItem; }
     }
 
-    private List<Item> mData = new ArrayList<>();
+    private static List<Item> mData = new ArrayList<>();
+    private static List<ViewHolderBinder> mBinders = new ArrayList<>();
     private SparseArray<ViewHolderFactory> mFactoryMap;
 
     public CustomAdapter() {
@@ -44,39 +53,40 @@ public class CustomAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     private void initFactory() {
         mFactoryMap = new SparseArray<>();
-        mFactoryMap.put(ItemTypes.ITEM1.getType(), new Item123ViewHolderFactory(R.layout.item1_layout));
-        mFactoryMap.put(ItemTypes.ITEM2.getType(), new Item123ViewHolderFactory(R.layout.item2_layout));
-        mFactoryMap.put(ItemTypes.ITEM3.getType(), new Item123ViewHolderFactory(R.layout.item3_layout));
+        mFactoryMap.put(ITEM1.getType(), new Item123ViewHolderFactory(R.layout.item1_layout, ITEM1));
+        mFactoryMap.put(ITEM2.getType(), new Item123ViewHolderFactory(R.layout.item2_layout, ITEM2));
+        mFactoryMap.put(ITEM3.getType(), new Item123ViewHolderFactory(R.layout.item3_layout, ITEM3));
+    }
+
+    private ViewHolderBinder generateBinder(BaseItem baseItem){
+        Item item = (Item)baseItem;
+        switch (item.itemType) {
+            case ITEM1:
+                return new Item1ViewHolderBinder(baseItem, baseItem.getType());
+            case ITEM2:
+                return new Item2ViewHolderBinder(baseItem, baseItem.getType());
+            case ITEM3:
+                return new Item3ViewHolderBinder(baseItem, baseItem.getType());
+            default:
+                return null;
+        }
     }
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int itemType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int itemType) {
         Log.d(TAG, "onCreateViewHolder/"+itemType);
         ViewHolderFactory factory = mFactoryMap.get(itemType);
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return (MyViewHolder)factory.createViewHolder(parent, inflater, this);
+        return factory.createViewHolder(parent, inflater);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Log.d(TAG, ">>bind<< pos="+position);
-        switch(mData.get(position).itemType){
-            case ITEM1:
-                holder.textItem1.setText(mData.get(position).getText());
-                holder.buttonItem1.setText("DEL #"+position);
-                break;
-            case ITEM2:
-                holder.textItem2.setText(mData.get(position).getText());
-                holder.buttonItem2.setText("DEL #"+position);
-                break;
-            case ITEM3:
-                holder.textItem3.setText(mData.get(position).getText());
-                holder.buttonItem3.setText("DEL #"+position);
-                break;
-            default:
-                break;
-        }
+        ViewHolderBinder binder = mBinders.get(position);
+        if (binder != null)
+            binder.bindViewHolder(holder);
     }
 
     @Override
@@ -91,16 +101,92 @@ public class CustomAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     public void AddItem(long id, int itemType, String itemText) {
         Log.d(TAG, "AddItem ("+itemType+") "+itemText);
-        mData.add(new Item(id, itemType,itemText));
+        Item newItem = new Item(id, itemType,itemText);
+        mData.add(newItem);
+        mBinders.add(generateBinder(newItem));
         notifyItemInserted(mData.size()-1);
     }
 
-    public void DeleteItem(int position) {
+    public static void DeleteItem(int position) {
         Log.d(TAG, "DeleteItem pos="+position);
         if (position>=0 && position<mData.size()) {
             mData.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, mData.size());
+            mBinders.remove(position);
+            //notifyItemRemoved(position);
+            //notifyItemRangeChanged(position, mData.size());
         }
     }
+
+    public static class Item1ViewHolder extends RecyclerView.ViewHolder {
+        public TextView textItem;
+        public Button buttonItem;
+        private static final String TAG = "Item1ViewHolder";
+
+        public Item1ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            Log.d(TAG, "Item1ViewHolder()");
+
+            textItem = itemView.findViewById(R.id.item1_textview);
+            buttonItem = itemView.findViewById(R.id.item1_button);
+
+            if (buttonItem!=null)
+                buttonItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int pos = getAdapterPosition();
+                        Log.d(TAG, "delete item1 pos="+pos);
+                        DeleteItem(pos);
+                    }
+                });
+        }
+    }
+
+    public static class Item2ViewHolder extends RecyclerView.ViewHolder {
+        public TextView textItem;
+        public Button buttonItem;
+        private static final String TAG = "Item2ViewHolder";
+
+        public Item2ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            Log.d(TAG, "Item2ViewHolder()");
+
+            textItem = itemView.findViewById(R.id.item2_textview);
+            buttonItem = itemView.findViewById(R.id.item2_button);
+
+            if (buttonItem!=null)
+                buttonItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int pos = getAdapterPosition();
+                        Log.d(TAG, "delete item2 pos="+pos);
+                        DeleteItem(pos);
+                    }
+                });
+        }
+    }
+
+    public static class Item3ViewHolder extends RecyclerView.ViewHolder {
+        public TextView textItem;
+        public Button buttonItem;
+        private static final String TAG = "Item3ViewHolder";
+
+        public Item3ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            Log.d(TAG, "Item3ViewHolder()");
+
+            textItem = itemView.findViewById(R.id.item3_textview);
+            buttonItem = itemView.findViewById(R.id.item3_button);
+
+            if (buttonItem!=null)
+                buttonItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int pos = getAdapterPosition();
+                        Log.d(TAG, "delete item3 pos="+pos);
+                        DeleteItem(pos);
+                    }
+                });
+        }
+    }
+
 }

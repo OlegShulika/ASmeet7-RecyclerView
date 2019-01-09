@@ -13,3 +13,4 @@ public abstract class ViewHolderBinder {
 
     public abstract BaseItem getItem();
 }
+

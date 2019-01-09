@@ -5,6 +5,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 public interface ViewHolderFactory {
-    RecyclerView.ViewHolder createViewHolder (ViewGroup parent, LayoutInflater inflater, CustomAdapter adapter);
+    RecyclerView.ViewHolder createViewHolder (ViewGroup parent, LayoutInflater inflater);
 }
 
