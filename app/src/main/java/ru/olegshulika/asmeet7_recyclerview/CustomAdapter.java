@@ -29,6 +29,7 @@ public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<ViewHolderBinder> mBinders;
     private SparseArray<ViewHolderFactory> mFactoryMap;
 
+
     public CustomAdapter() {
         mData = new ArrayList<>();
         mBinders = new ArrayList<>();
