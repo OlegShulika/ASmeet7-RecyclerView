@@ -16,6 +16,7 @@ public class Item4ViewHolderBinder extends ViewHolderBinder {
         Item4ViewHolder item4ViewHolder = (Item4ViewHolder)holder;
         item4ViewHolder.mHorizontalAdapter.setData(item4ViewHolder.mCustomAdapter.GetDataSnapshot());
         mPosition = item4ViewHolder.getAdapterPosition();
+        item4ViewHolder.mHorizontalAdapter.mPosition = this.mPosition;
     }
 
     @Override

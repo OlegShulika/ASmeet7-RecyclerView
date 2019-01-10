@@ -15,7 +15,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private static final String TAG = "HorizontalAdapter";
     private List<String> mData;
     private CustomAdapter customAdapter;
-    private int  mPosition;
+    protected int  mPosition = -1;
 
     public HorizontalAdapter(CustomAdapter custAdapter) {
         mData = new ArrayList<>();
@@ -34,7 +34,8 @@ public class HorizontalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             mData.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, mData.size() - 1);
-            if (mData.size()==0) {
+            if (mData.size()==0 && mPosition>=0) {
+                Log.d(TAG, "delete Horizontal RecyclerViewView pos="+mPosition);
                 customAdapter.DeleteItem(mPosition);
             }
         }
@@ -69,7 +70,6 @@ public class HorizontalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         ItemViewHolder holder = (ItemViewHolder) viewHolder;
         holder.mButton.setText(mData.get(position));
         holder.itemView.setTag(position);
-        mPosition=position;
     }
 
     @Override
